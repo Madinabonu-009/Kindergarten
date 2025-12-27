@@ -198,8 +198,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 // Production: Serve frontend static files
 if (process.env.NODE_ENV === 'production') {
-  // Use process.cwd() for Render compatibility
-  const frontendPath = path.join(process.cwd(), 'frontend/dist')
+  // __dirname = /opt/render/project/src/backend/src
+  // Need: /opt/render/project/src/frontend/dist
+  const frontendPath = path.resolve(__dirname, '../../frontend/dist')
   
   console.log('Serving frontend from:', frontendPath)
   
@@ -231,7 +232,7 @@ if (process.env.NODE_ENV === 'production') {
     if (req.path.startsWith('/api')) {
       return next()
     }
-    res.sendFile(path.join(process.cwd(), 'frontend/dist', 'index.html'))
+    res.sendFile(path.resolve(__dirname, '../../frontend/dist/index.html'))
   })
 }
 
