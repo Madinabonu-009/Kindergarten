@@ -199,7 +199,29 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 // Production: Serve frontend static files
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../../frontend/dist')
-  app.use(express.static(frontendPath))
+  
+  // Static files with correct MIME types
+  app.use(express.static(frontendPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript')
+      } else if (filePath.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css')
+      } else if (filePath.endsWith('.json')) {
+        res.setHeader('Content-Type', 'application/json')
+      } else if (filePath.endsWith('.png')) {
+        res.setHeader('Content-Type', 'image/png')
+      } else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) {
+        res.setHeader('Content-Type', 'image/jpeg')
+      } else if (filePath.endsWith('.svg')) {
+        res.setHeader('Content-Type', 'image/svg+xml')
+      } else if (filePath.endsWith('.woff2')) {
+        res.setHeader('Content-Type', 'font/woff2')
+      } else if (filePath.endsWith('.woff')) {
+        res.setHeader('Content-Type', 'font/woff')
+      }
+    }
+  }))
   
   // SPA fallback - API bo'lmagan barcha so'rovlarni index.html ga yo'naltirish
   app.get('*', (req, res, next) => {
